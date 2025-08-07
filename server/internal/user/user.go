@@ -1,0 +1,31 @@
+package user
+
+import (
+	"context"
+)
+
+type User struct {
+	ID       int64  `json:"id" db:"id"`
+	UserName string `json:"username" db:"username"`
+	Email    string `json:"email" db:"email"`
+	Password string `json:"password" db:"password"`
+}
+
+type CreateUserReq struct {
+	UserName string `json:"username" db:"username"`
+	Email    string `json:"email" db:"email"`
+	Password string `json:"password" db:"password"`
+}
+
+type CreateUserRes struct {
+	ID       string `json:"id" db:"id"`
+	UserName string `json:"username" db:"username"`
+	Email    string `json:"email" db:"email"`
+}
+
+type Repository interface {
+	CreateUser(context.Context, *User) (*User, error)
+}
+
+type Service interface {
+}
