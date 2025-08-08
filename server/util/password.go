@@ -7,9 +7,14 @@ import (
 )
 
 func HashPassword(password string) (string, error) {
-	haspassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hashpassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", fmt.Errorf("failed to hash password %w", err)
 	}
-	return string(haspassword), nil
+	return string(hashpassword), nil
+}
+
+func CheckPassword(password string, hashpassword string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(hashpassword), []byte(password))
+	return err
 }

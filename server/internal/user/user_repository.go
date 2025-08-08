@@ -16,12 +16,13 @@ type repository struct {
 	db IDBTX
 }
 
-func New(db IDBTX) Repository {
+func NewRepository(db IDBTX) Repository {
 	return &repository{db: db}
 }
 
 const (
 	queryInsertUser = "INSERT INTO users (username, email, password) VALUES ($1,$2,$3) returning id"
+	queryGetUser    = "Select id,email,username,password FROM users WHERE email = $1"
 )
 
 func (r *repository) CreateUser(ctx context.Context, user *User) (*User, error) {
@@ -32,4 +33,13 @@ func (r *repository) CreateUser(ctx context.Context, user *User) (*User, error) 
 	}
 	user.ID = int64(lastInsertId)
 	return user, nil
+}
+
+func (r *repository) GetUserByEmail(ctx context.Context, email string) (*User, error) {
+	u := User{}
+	err := r.db.QueryRowContext(ctx, queryGetUser, email).Scan(&u.ID, &u.Email, &u.UserName, &u.Password)
+	if err != nil {
+		return &User{}, nil
+	}
+	return &u, nil
 }
